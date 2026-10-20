@@ -39,7 +39,8 @@ def main():
                 raise SafeError("invalid_model_id")
             path = ROOT / ".env"
             fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC | getattr(os, "O_NOFOLLOW", 0), 0o600)
-            os.fchmod(fd, 0o600)
+            if hasattr(os, "fchmod"):
+                os.fchmod(fd, 0o600)
             with os.fdopen(fd, "w") as stream:
                 stream.write("LITELLM_TOKEN=" + key + "\nTRIAGE_MODEL=" + model + "\n")
             print("Saved private local configuration to ignored .env")
